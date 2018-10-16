@@ -4,8 +4,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.user.adapter.CatalogAdapter;
 import com.example.user.objects.Category;
 import com.example.user.onlineshop.R;
@@ -84,6 +86,13 @@ public class CatalogActivity extends AppCompatActivity {
         });
     }
 
+    private void setImageView(String imageUrl) {
+        ImageView imageView = (ImageView) findViewById(R.id.categoryImage);
+
+        Glide.with(CatalogActivity.this).load(imageUrl).into(imageView);
+
+    }
+
     private void getCategoriesFromJson(JSONObject data) {
         categories = new ArrayList<>();
         try {
@@ -98,6 +107,7 @@ public class CatalogActivity extends AppCompatActivity {
                             jsonCategory.getInt("hasSubcategories"),
                             jsonCategory.getString("fullName"),
                             jsonCategory.getString("categoryDescription"));
+
                     categories.add(category);
                 }
             }

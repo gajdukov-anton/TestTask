@@ -7,6 +7,7 @@ public class Category {
     private int hasSubCategories;
     private String fullName;
     private String categoryDescription;
+    private int imageId;
 
     public Category() {}
 
@@ -18,6 +19,10 @@ public class Category {
         this.hasSubCategories = hasSubCategories;
         this.fullName = fullName;
         this.categoryDescription = categoryDescription;
+    }
+
+    public void setImageId(int imageId) {
+        this.imageId = imageId;
     }
 
     public void setCategoryId(int categoryId) {
@@ -42,6 +47,10 @@ public class Category {
 
     public void setCategoryDescription(String categoryDescription) {
         this.categoryDescription = categoryDescription;
+    }
+
+    public int getImageId() {
+        return imageId;
     }
 
     public int getCategoryId() {
