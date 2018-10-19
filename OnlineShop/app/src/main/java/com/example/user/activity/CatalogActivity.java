@@ -1,5 +1,6 @@
 package com.example.user.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.user.adapter.CatalogAdapter;
+import com.example.user.api.BaseApi;
+import com.example.user.api.CategoryApi;
+import com.example.user.application.App;
 import com.example.user.objects.Category;
 import com.example.user.onlineshop.R;
 
@@ -28,11 +32,9 @@ import okhttp3.Response;
 
 public class CatalogActivity extends AppCompatActivity {
     private List<Category> categories;
-    OkHttpClient client = new OkHttpClient();
     private RecyclerView recyclerView;
     private CatalogAdapter adapter;
     private LinearLayoutManager llm;
-    private static String url = "http://82.146.53.185:8101/api/common/category/list?appKey=yx-1PU73oUj6gfk0hNyrNUwhWnmBRld7-SfKAU7Kg6Fpp43anR261KDiQ-MY4P2SRwH_cd4Py1OCY5jpPnY_Viyzja-s18njTLc0E7XcZFwwvi32zX-B91Sdwq1KeZ7m";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,17 +53,17 @@ public class CatalogActivity extends AppCompatActivity {
 
     void createRecyclerViewWithCategories() throws IOException {
 
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
+        OkHttpClient client = BaseApi.getClient();
+        CategoryApi categoryApi = App.getCategoryApi();
+        Request request = categoryApi.createRequestFroDowloadCategories();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Toast.makeText(CatalogActivity.this, call.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(CatalogActivity.this, "", Toast.LENGTH_SHORT).show();
                 call.cancel();
             }
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String myResponse = response.body().string();
@@ -71,12 +73,7 @@ public class CatalogActivity extends AppCompatActivity {
                         try {
                             JSONObject json = new JSONObject(myResponse);
                             getCategoriesFromJson(json.getJSONObject("data"));
-                            Toast.makeText(CatalogActivity.this, categories.get(0).getTitle(), Toast.LENGTH_SHORT).show();
-                            recyclerView = (RecyclerView) findViewById(R.id.categories);
-                            adapter = new CatalogAdapter(CatalogActivity.this, categories);
-                            llm = new LinearLayoutManager(CatalogActivity.this);
-                            recyclerView.setLayoutManager(llm);
-                            recyclerView.setAdapter(adapter);
+                            createRecyclerView();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -86,11 +83,27 @@ public class CatalogActivity extends AppCompatActivity {
         });
     }
 
-    private void setImageView(String imageUrl) {
-        ImageView imageView = (ImageView) findViewById(R.id.categoryImage);
+    private void createRecyclerView() {
+        recyclerView = (RecyclerView) findViewById(R.id.categories);
+        adapter = new CatalogAdapter(CatalogActivity.this, categories, null);
+        CatalogAdapter.Callback adapterListener = new CatalogAdapter.Callback() {
+            @Override
+            public void onClickOnCategory(int position) {
+                loadAllGoodsActivity(position);
+            }
+        };
+        adapter.setCallback(adapterListener);
+        llm = new LinearLayoutManager(CatalogActivity.this);
+        recyclerView.setLayoutManager(llm);
+        recyclerView.setAdapter(adapter);
+    }
 
-        Glide.with(CatalogActivity.this).load(imageUrl).into(imageView);
-
+    private void loadAllGoodsActivity(int position) {
+        //Toast.makeText(this, "Отслеживается нажатие на карточку", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, AllGoodsActivity.class);
+        intent.putExtra("categoryId", categories.get(position).getCategoryId());
+        intent.putExtra("title", categories.get(position).getTitle());
+        startActivity(intent);
     }
 
     private void getCategoriesFromJson(JSONObject data) {
@@ -112,9 +125,7 @@ public class CatalogActivity extends AppCompatActivity {
                 }
             }
         } catch (JSONException e) {
-
+            e.printStackTrace();
         }
     }
-
-
 }
