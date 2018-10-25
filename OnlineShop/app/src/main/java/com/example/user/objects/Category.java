@@ -1,5 +1,7 @@
 package com.example.user.objects;
 
+import com.example.user.onlineshop.R;
+
 public class Category {
     private int categoryId;
     private String title;
@@ -50,6 +52,9 @@ public class Category {
     }
 
     public int getImageId() {
+        if (imageUrl == null) {
+            return(R.drawable.no_photo);
+        }
         return imageId;
     }
 

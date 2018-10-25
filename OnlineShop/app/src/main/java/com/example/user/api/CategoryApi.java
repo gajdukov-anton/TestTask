@@ -14,7 +14,7 @@ public class CategoryApi extends BaseApi {
     }
 
     private Request request;
-    private String categoriesParam = "/common/category/list";
+    private String categoriesParam = "/common/category/list?";
 
     public Request createRequestFroDowloadCategories() {
         return new Request.Builder()

@@ -47,14 +47,9 @@ public class AllGoodsAdapter extends RecyclerView.Adapter<AllGoodsAdapter.ViewHo
     public void onBindViewHolder(AllGoodsAdapter.ViewHolder holder, final int position) {
         Product product = products.get(position);
         ImageView imageView = holder.goodsImage;
-        if (product.getImageUrl() != null) {
-            Glide.with(context)
-                    .load(product.getImageUrl())
-                    .into(imageView);
-        }
-
+        setImageToImageView(imageView, product);
         holder.goodsTitle.setText(product.getTitle());
-        holder.goodsPrice.setText(String.valueOf(product.getPrice()));
+        holder.goodsPrice.setText(product.getPrice());
         holder.goodsView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,6 +60,16 @@ public class AllGoodsAdapter extends RecyclerView.Adapter<AllGoodsAdapter.ViewHo
         });
     }
 
+
+    private void setImageToImageView(ImageView imageView, Product product) {
+        if (product.getImageUrl().equals("null")) {
+           imageView.setImageResource(R.drawable.no_photo);
+        } else {
+            Glide.with(context)
+                    .load(product.getImageUrl())
+                    .into(imageView);
+        }
+    }
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {

@@ -41,7 +41,7 @@ public class CatalogActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
 
-
+        setTitle(R.string.catalog_activity_name);
         try {
             createRecyclerViewWithCategories();
         } catch (IOException e) {
@@ -99,7 +99,6 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
     private void loadAllGoodsActivity(int position) {
-        //Toast.makeText(this, "Отслеживается нажатие на карточку", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, AllGoodsActivity.class);
         intent.putExtra("categoryId", categories.get(position).getCategoryId());
         intent.putExtra("title", categories.get(position).getTitle());

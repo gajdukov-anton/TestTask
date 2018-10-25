@@ -49,9 +49,7 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.ViewHold
         Category category = categories.get(position);
         ImageView imageView = holder.categoryImage;
 
-        Glide.with(context)
-                .load(category.getImageUrl())
-                .into(imageView);
+        setImageToImageView(imageView, category);
         holder.categoryTitle.setText(category.getTitle());
         holder.categoryFullName.setText(category.getFullName());
         holder.categoryView.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +61,16 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.ViewHold
                 }
             }
         });
+    }
+
+    private void setImageToImageView(ImageView imageView, Category category) {
+        if (category.getImageUrl().equals("null")) {
+            imageView.setImageResource(R.drawable.no_photo);
+        } else {
+            Glide.with(context)
+                    .load(category.getImageUrl())
+                    .into(imageView);
+        }
     }
 
     @Override

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="rub">
+        <item quantity="one">%d рубль</item>
+        <item quantity="two">%d рубля</item>
+        <item quantity="many">%d рублей</item>
+        <item quantity="zero">%d рублей</item>
+    </plurals>
+</resources>

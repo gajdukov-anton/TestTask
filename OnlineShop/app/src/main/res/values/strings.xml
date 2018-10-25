@@ -2,4 +2,6 @@
     <string name="app_name">OnlineShop</string>
     <string name="catalog_activity_name">Кетогории</string>
     <string name="title_activity_all_goods">AllGoodsActivity</string>
+    <string name="rub"> руюлей</string>
+    <string name="buy">Купить</string>
 </resources>

@@ -4,7 +4,7 @@ public class Product {
     private int productId;
     private String title;
     private String productDescription;
-    private String price;
+    private String price = "0";
     private String rating;
     private String imageUrl;
     private String[] images;
@@ -54,11 +54,20 @@ public class Product {
     }
 
     public String getPrice() {
-        return price;
+        if (price.equals("null")) {
+            return "нет в продаже";
+        } else {
+            return price + " руб";
+
+        }
     }
 
     public String getRating() {
-        return rating;
+        if (rating.equals("null"))
+            return "0";
+        else {
+            return rating;
+        }
     }
 
     public String getImageUrl() {

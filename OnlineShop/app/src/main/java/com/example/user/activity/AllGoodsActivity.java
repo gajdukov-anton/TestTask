@@ -1,9 +1,12 @@
 package com.example.user.activity;
 
+import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.user.adapter.AllGoodsAdapter;
@@ -23,8 +26,10 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class AllGoodsActivity extends AppCompatActivity {
@@ -32,6 +37,7 @@ public class AllGoodsActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private AllGoodsAdapter adapter;
     private LinearLayoutManager llm;
+    private int categoryId;
 
 
     @Override
@@ -40,10 +46,30 @@ public class AllGoodsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_all_goods);
         Bundle arguments = getIntent().getExtras();
         setTitle(arguments.getString("title"));
+        categoryId = arguments.getInt("categoryId");
+
         try {
             createRecyclerViewWithProducts(arguments.getInt("categoryId"));
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        createBackButton();
+    }
+
+    private void createBackButton() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -51,7 +77,8 @@ public class AllGoodsActivity extends AppCompatActivity {
 
         OkHttpClient client = BaseApi.getClient();
         ProductApi productApi = App.getProductApi();
-        Request request = productApi.createRequestForDownloadProducts();
+
+        Request request = productApi.createRequestForDownloadProducts(categoryId);
 
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -69,7 +96,6 @@ public class AllGoodsActivity extends AppCompatActivity {
                         try {
                             JSONObject json = new JSONObject(myResponse);
                             getProductsFromJson(json);
-
                             createRecyclerView();
                         } catch (JSONException e) {
                             Toast.makeText(AllGoodsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -86,13 +112,20 @@ public class AllGoodsActivity extends AppCompatActivity {
         AllGoodsAdapter.Callback adapterListener = new AllGoodsAdapter.Callback() {
             @Override
             public void onClickOnGoods(int position) {
-
+                loadGoodActivity(position);
             }
         };
         adapter.setCallback(adapterListener);
         llm = new LinearLayoutManager(AllGoodsActivity.this);
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(adapter);
+    }
+
+    private void loadGoodActivity(int position) {
+        Intent intent = new Intent(this, GoodActivity.class);
+        intent.putExtra("productId", products.get(position).getProductId());
+        intent.putExtra("title", products.get(position).getTitle());
+        startActivity(intent);
     }
 
     private void getProductsFromJson(JSONObject data) {
