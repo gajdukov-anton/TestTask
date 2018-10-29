@@ -14,15 +14,13 @@ import com.bumptech.glide.Glide;
 import com.example.user.api.BaseApi;
 import com.example.user.api.ProductApi;
 import com.example.user.application.App;
-import com.example.user.objects.Product;
+import com.example.user.model.Product;
 import com.example.user.onlineshop.R;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;

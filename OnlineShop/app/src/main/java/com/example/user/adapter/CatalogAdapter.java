@@ -8,10 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.user.objects.Category;
+import com.example.user.model.Category;
 import com.example.user.onlineshop.R;
 
 import java.util.List;
@@ -64,7 +63,7 @@ public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.ViewHold
     }
 
     private void setImageToImageView(ImageView imageView, Category category) {
-        if (category.getImageUrl().equals("null")) {
+        if (category.getImageUrl() == null) {
             imageView.setImageResource(R.drawable.no_photo);
         } else {
             Glide.with(context)

@@ -13,7 +13,7 @@ import com.example.user.adapter.AllGoodsAdapter;
 import com.example.user.api.BaseApi;
 import com.example.user.api.ProductApi;
 import com.example.user.application.App;
-import com.example.user.objects.Product;
+import com.example.user.model.Product;
 import com.example.user.onlineshop.R;
 
 import org.json.JSONArray;
@@ -26,10 +26,8 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class AllGoodsActivity extends AppCompatActivity {
@@ -128,6 +126,7 @@ public class AllGoodsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // TODO: 25.10.2018 подключить либы для маппинга 
     private void getProductsFromJson(JSONObject data) {
         products = new ArrayList<>();
         try {

@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
-import com.example.user.objects.Product;
+import com.example.user.model.Product;
 import com.example.user.onlineshop.R;
 
 import java.util.List;
@@ -81,6 +81,7 @@ public class AllGoodsAdapter extends RecyclerView.Adapter<AllGoodsAdapter.ViewHo
         return products.size();
     }
 
+    // TODO: 25.10.2018 под ViewHolder создать отдельные классы
     public class ViewHolder extends RecyclerView.ViewHolder {
         final TextView goodsTitle, goodsPrice;
         final ImageView goodsImage;

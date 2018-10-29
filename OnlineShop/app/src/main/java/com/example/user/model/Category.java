@@ -1,4 +1,4 @@
-package com.example.user.objects;
+package com.example.user.model;
 
 import com.example.user.onlineshop.R;
 

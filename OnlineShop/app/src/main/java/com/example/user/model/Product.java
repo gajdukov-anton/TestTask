@@ -1,4 +1,4 @@
-package com.example.user.objects;
+package com.example.user.model;
 
 public class Product {
     private int productId;
@@ -7,6 +7,7 @@ public class Product {
     private String price = "0";
     private String rating;
     private String imageUrl;
+    // TODO: 25.10.2018 вместо массивов лучше использовать списки
     private String[] images;
 
     public Product() {
