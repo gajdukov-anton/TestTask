@@ -26,23 +26,19 @@ public class CategoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
         setTitle(R.string.catalog_activity_name);
-        try {
-            createRecyclerViewWithCategories();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        createRecyclerViewWithCategories();
     }
 
-    void createRecyclerViewWithCategories() throws IOException {
+    void createRecyclerViewWithCategories() {
         CategoryApi categoryApi = App.getCategoryApi();
         CategoryApi.Callback categoryApiListener = new CategoryApi.Callback() {
             @Override
-            public void onCategoriesLoaded(List<Category> categories) {
+            public void onCategoriesDownloaded(List<Category> categories) {
                 createRecyclerView(categories);
             }
         };
         categoryApi.setCallback(categoryApiListener);
-        categoryApi.createRecyclerViewWithCategories(this);
+        categoryApi.downloadCategoriesList(this);
     }
 
     private void createRecyclerView(List<Category> categories) {

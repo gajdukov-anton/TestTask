@@ -62,7 +62,7 @@ public class AllGoodsAdapter extends RecyclerView.Adapter<AllGoodsAdapter.ViewHo
 
 
     private void setImageToImageView(ImageView imageView, Product product) {
-        if (product.getImageUrl().equals("null")) {
+        if (product.getImageUrl() == null) {
            imageView.setImageResource(R.drawable.no_photo);
         } else {
             Glide.with(context)

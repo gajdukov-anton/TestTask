@@ -11,7 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.user.api.BaseApi;
 import com.example.user.api.ProductApi;
 import com.example.user.application.App;
 import com.example.user.model.Product;
@@ -20,13 +19,7 @@ import com.example.user.onlineshop.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import java.util.List;
 
 public class GoodActivity extends AppCompatActivity {
 
@@ -41,12 +34,7 @@ public class GoodActivity extends AppCompatActivity {
         setTitle(arguments.getString("title"));
         productId = arguments.getInt("productId");
         createBackButton();
-
-        try {
-            createProductFromServer();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        createProductView();
     }
 
     private void createBackButton() {
@@ -66,61 +54,24 @@ public class GoodActivity extends AppCompatActivity {
         }
     }
 
-    private void createProductFromServer() throws IOException {
-        OkHttpClient client = BaseApi.getClient();
-        ProductApi productApi = App.getProductApi();
-        Request request = productApi.createRequestForDownloadProduct(productId);
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Toast.makeText(GoodActivity.this, "Failure", Toast.LENGTH_SHORT).show();
-                call.cancel();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final String myResponse = response.body().string();
-                GoodActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            JSONObject json = new JSONObject(myResponse);
-                            getProductFromJson(json);
-                            createProductView();
-                        } catch (JSONException e) {
-                            Toast.makeText(GoodActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    private void getProductFromJson(JSONObject data) {
-        try {
-            JSONObject json = data.getJSONObject("data");
-            if (json != null) {
-                Product product = new Product();
-                product.setProductId(json.getInt("productId"));
-                product.setTitle(json.getString("title"));
-                product.setImageUrl(json.getString("imageUrl"));
-                product.setPrice(json.getString("price"));
-                product.setRating(json.getString("rating"));
-                product.setProductDescription(json.getString("productDescription"));
-                this.product = product;
-
-            } else {
-                Toast.makeText(GoodActivity.this, "jsonArray is null", Toast.LENGTH_SHORT).show();
-
-            }
-        } catch (JSONException e) {
-
-            Toast.makeText(GoodActivity.this, data.toString(), Toast.LENGTH_LONG).show();
-        }
-    }
-
     private void createProductView() {
+        ProductApi productApi = App.getProductApi();
+        ProductApi.Callback productApiListener = new ProductApi.Callback() {
+            @Override
+            public void onAllGoodsDownloaded(List<Product> products) {
+            }
+
+            @Override
+            public void onGoodDownloaded(Product product) {
+                createProductView(product);
+            }
+        };
+        productApi.setCallback(productApiListener);
+        productApi.downloadProduct(this, productId);
+    }
+
+    private void createProductView(Product product) {
+        this.product = product;
         ImageView imageView = (ImageView) findViewById(R.id.imageGood);
         TextView textView = (TextView) findViewById(R.id.titleGood);
         RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingGood);
@@ -130,16 +81,11 @@ public class GoodActivity extends AppCompatActivity {
         ratingBar.setRating(Float.parseFloat(product.getRating()));
         textView = (TextView) findViewById(R.id.descriptionGood);
         textView.setText("Описание: " + product.getProductDescription());
-
-//        Glide.with(this)
-//                .load(product.getImageUrl())
-//                .into(imageView);
         setImageToImageView(imageView, product);
-
     }
 
     private void setImageToImageView(ImageView imageView, Product product) {
-        if (product.getImageUrl().equals("null")) {
+        if (product.getImageUrl() == null) {
             imageView.setImageResource(R.drawable.no_photo);
         } else {
             Glide.with(this)
@@ -147,5 +93,4 @@ public class GoodActivity extends AppCompatActivity {
                     .into(imageView);
         }
     }
-
 }

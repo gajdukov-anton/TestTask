@@ -72,39 +72,24 @@ public class AllGoodsActivity extends AppCompatActivity {
     }
 
     void createRecyclerViewWithProducts(int id) throws IOException {
-
-        OkHttpClient client = BaseApi.getClient();
         ProductApi productApi = App.getProductApi();
-
-        Request request = productApi.createRequestForDownloadProducts(categoryId);
-
-        client.newCall(request).enqueue(new Callback() {
+        ProductApi.Callback productApiListener = new ProductApi.Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                Toast.makeText(AllGoodsActivity.this, "Failure", Toast.LENGTH_SHORT).show();
-                call.cancel();
+            public void onAllGoodsDownloaded(List<Product> products) {
+                createRecyclerView(products);
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final String myResponse = response.body().string();
-                AllGoodsActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            JSONObject json = new JSONObject(myResponse);
-                            getProductsFromJson(json);
-                            createRecyclerView();
-                        } catch (JSONException e) {
-                            Toast.makeText(AllGoodsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+            public void onGoodDownloaded(Product product) {
+
             }
-        });
+        };
+        productApi.setCallback(productApiListener);
+        productApi.downloadProductList(this, categoryId);
     }
 
-    private void createRecyclerView() {
+    private void createRecyclerView(List<Product> products) {
+        this.products = products;
         recyclerView = (RecyclerView) findViewById(R.id.products);
         adapter = new AllGoodsAdapter(AllGoodsActivity.this, products, null);
         AllGoodsAdapter.Callback adapterListener = new AllGoodsAdapter.Callback() {
@@ -125,35 +110,4 @@ public class AllGoodsActivity extends AppCompatActivity {
         intent.putExtra("title", products.get(position).getTitle());
         startActivity(intent);
     }
-
-    // TODO: 25.10.2018 подключить либы для маппинга 
-    private void getProductsFromJson(JSONObject data) {
-        products = new ArrayList<>();
-        try {
-            JSONArray jsonArray = data.getJSONArray("data");
-
-            if (jsonArray != null) {
-                int len = jsonArray.length();
-                for (int i = 0; i < len; i++) {
-                    JSONObject jsonProduct = new JSONObject(jsonArray.get(i).toString());
-                    Product product = new Product();
-                    product.setProductId(jsonProduct.getInt("productId"));
-                    product.setTitle(jsonProduct.getString("title"));
-                    product.setImageUrl(jsonProduct.getString("imageUrl"));
-                    product.setPrice(jsonProduct.getString("price"));
-                    product.setRating(jsonProduct.getString("rating"));
-                    product.setProductDescription(jsonProduct.getString("productDescription"));
-                    products.add(product);
-                }
-
-            } else {
-                Toast.makeText(AllGoodsActivity.this, "jsonArray is null", Toast.LENGTH_SHORT).show();
-
-            }
-        } catch (JSONException e) {
-
-            Toast.makeText(AllGoodsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
 }

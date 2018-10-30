@@ -55,7 +55,7 @@ public class Product {
     }
 
     public String getPrice() {
-        if (price.equals("null")) {
+        if (price == null) {
             return "нет в продаже";
         } else {
             return price + " руб";
@@ -64,7 +64,7 @@ public class Product {
     }
 
     public String getRating() {
-        if (rating.equals("null"))
+        if (rating == null)
             return "0";
         else {
             return rating;
