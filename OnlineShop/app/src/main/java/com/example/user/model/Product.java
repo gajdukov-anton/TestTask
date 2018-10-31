@@ -1,5 +1,7 @@
 package com.example.user.model;
 
+import java.util.List;
+
 public class Product {
     private int productId;
     private String title;
@@ -8,7 +10,7 @@ public class Product {
     private String rating;
     private String imageUrl;
     // TODO: 25.10.2018 вместо массивов лучше использовать списки
-    private String[] images;
+    private List<String> images;
 
     public Product() {
 
@@ -38,7 +40,7 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public void setImages(String[] images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 
@@ -75,7 +77,7 @@ public class Product {
         return imageUrl;
     }
 
-    public String[] getImages() {
+    public List<String> getImages() {
         return images;
     }
 }

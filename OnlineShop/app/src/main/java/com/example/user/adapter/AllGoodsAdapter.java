@@ -11,12 +11,13 @@ import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
+import com.example.user.holder.AllGoodssViewHolder;
 import com.example.user.model.Product;
 import com.example.user.onlineshop.R;
 
 import java.util.List;
 
-public class AllGoodsAdapter extends RecyclerView.Adapter<AllGoodsAdapter.ViewHolder> {
+public class AllGoodsAdapter extends RecyclerView.Adapter<AllGoodssViewHolder> {
     private List<Product> products;
     private LayoutInflater inflater;
     private AllGoodsAdapter.Callback callback;
@@ -38,19 +39,19 @@ public class AllGoodsAdapter extends RecyclerView.Adapter<AllGoodsAdapter.ViewHo
     }
 
     @Override
-    public AllGoodsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AllGoodssViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.all_goods_cardview, parent, false);
-        return new ViewHolder(view);
+        return new AllGoodssViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(AllGoodsAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(AllGoodssViewHolder holder, final int position) {
         Product product = products.get(position);
-        ImageView imageView = holder.goodsImage;
+        ImageView imageView = holder.getGoodsImage();
         setImageToImageView(imageView, product);
-        holder.goodsTitle.setText(product.getTitle());
-        holder.goodsPrice.setText(product.getPrice());
-        holder.goodsView.setOnClickListener(new View.OnClickListener() {
+        holder.getGoodsTitle().setText(product.getTitle());
+        holder.getGoodsPrice().setText(product.getPrice());
+        holder.getGoodsView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (callback != null) {
@@ -79,21 +80,5 @@ public class AllGoodsAdapter extends RecyclerView.Adapter<AllGoodsAdapter.ViewHo
     @Override
     public int getItemCount() {
         return products.size();
-    }
-
-    // TODO: 25.10.2018 под ViewHolder создать отдельные классы
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView goodsTitle, goodsPrice;
-        final ImageView goodsImage;
-        final CardView goodsView;
-
-        ViewHolder(View view) {
-            super(view);
-            goodsView = (CardView) itemView.findViewById(R.id.goodsView);
-            goodsTitle = (TextView) view.findViewById(R.id.goodsTitle);
-            goodsPrice = (TextView) view.findViewById(R.id.goodsPrice);
-            goodsImage = (ImageView) view.findViewById(R.id.goodsImage);
-
-        }
     }
 }

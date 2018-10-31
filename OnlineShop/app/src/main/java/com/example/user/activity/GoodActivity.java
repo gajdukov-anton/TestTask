@@ -1,6 +1,9 @@
 
 package com.example.user.activity;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -67,7 +70,11 @@ public class GoodActivity extends AppCompatActivity {
             }
         };
         productApi.setCallback(productApiListener);
-        productApi.downloadProduct(this, productId);
+        if (isOnline()) {
+            productApi.downloadProduct(this, productId);
+        } else {
+            Toast.makeText(this, "Отсутствует подключение к интеренету", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void createProductView(Product product) {
@@ -92,5 +99,12 @@ public class GoodActivity extends AppCompatActivity {
                     .load(product.getImageUrl())
                     .into(imageView);
         }
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }

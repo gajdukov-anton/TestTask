@@ -1,6 +1,9 @@
 package com.example.user.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -85,7 +88,11 @@ public class AllGoodsActivity extends AppCompatActivity {
             }
         };
         productApi.setCallback(productApiListener);
-        productApi.downloadProductList(this, categoryId);
+        if (isOnline()) {
+            productApi.downloadProductList(this, categoryId);
+        } else {
+            Toast.makeText(this, "Отсутствует подключение к интеренету", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void createRecyclerView(List<Product> products) {
@@ -109,5 +116,12 @@ public class AllGoodsActivity extends AppCompatActivity {
         intent.putExtra("productId", products.get(position).getProductId());
         intent.putExtra("title", products.get(position).getTitle());
         startActivity(intent);
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }

@@ -1,10 +1,14 @@
 package com.example.user.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 import com.example.user.adapter.CatalogAdapter;
 import com.example.user.api.CategoryApi;
@@ -38,7 +42,11 @@ public class CategoryActivity extends AppCompatActivity {
             }
         };
         categoryApi.setCallback(categoryApiListener);
-        categoryApi.downloadCategoriesList(this);
+        if (isOnline()) {
+            categoryApi.downloadCategoriesList(this);
+        } else {
+            Toast.makeText(this, "Отсутствует подключение к интеренету", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void createRecyclerView(List<Category> categories) {
@@ -62,5 +70,12 @@ public class CategoryActivity extends AppCompatActivity {
         intent.putExtra("categoryId", categories.get(position).getCategoryId());
         intent.putExtra("title", categories.get(position).getTitle());
         startActivity(intent);
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }
