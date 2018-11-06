@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -87,8 +88,12 @@ public class GoodActivity extends AppCompatActivity {
         textView.setText(product.getPrice());
         ratingBar.setRating(Float.parseFloat(product.getRating()));
         textView = (TextView) findViewById(R.id.descriptionGood);
-        textView.setText("Описание: " + product.getProductDescription());
+        textView.setText(product.getProductDescription());
         setImageToImageView(imageView, product);
+    }
+
+    public void buyGood(View view) {
+        Toast.makeText(this, "Куплено", Toast.LENGTH_SHORT).show();
     }
 
     private void setImageToImageView(ImageView imageView, Product product) {
