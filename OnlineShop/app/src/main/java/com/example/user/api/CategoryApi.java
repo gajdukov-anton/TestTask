@@ -2,7 +2,7 @@ package com.example.user.api;
 
 import android.widget.Toast;
 
-import com.example.user.activity.CategoryActivity;
+import com.example.user.activity.Category.CategoryActivity;
 import com.example.user.model.Category;
 import com.google.gson.Gson;
 
@@ -20,19 +20,10 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class CategoryApi extends BaseApi {
-
+    // TODO: 07.11.2018 убрать static
     private String categoriesParam = "/common/category/list?";
-    private Callback callback = null;
 
-    private CategoryApi() {
-    }
-
-    private static class CategoryApiHolder {
-        private final static CategoryApi instance = new CategoryApi();
-    }
-
-    public static CategoryApi getInstance() {
-        return CategoryApiHolder.instance;
+    public CategoryApi() {
     }
 
     private Request createRequestFroDownloadCategories() {
@@ -41,46 +32,61 @@ public class CategoryApi extends BaseApi {
                 .build();
     }
 
-    // TODO: 25.10.2018 добавить метод getCategories(Listener) 
-
     public interface Callback {
         void onCategoriesDownloaded(List<Category> categories);
+        void onFailure(String request);
     }
 
-    public void setCallback(Callback callback) {
-        this.callback = callback;
-    }
+    // TODO: 07.11.2018 слушатель передавать в метод
 
-    public void downloadCategoriesList(final CategoryActivity categoryActivity) {
-        OkHttpClient client = BaseApi.getClient();
-        Request request = createRequestFroDownloadCategories();
 
-        client.newCall(request).enqueue(new okhttp3.Callback() {
+    public void downloadCategoriesList(final CategoryActivity categoryActivity, final Callback callback) {
+        sendRequest(createRequestFroDownloadCategories(), categoryActivity, new Listener() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                call.cancel();
+            public void onSuccess(JSONObject jsonObject) {
+                List<Category> categories = getCategoriesFromJson(jsonObject);
+                callback.onCategoriesDownloaded(categories);
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final String myResponse = response.body().string();
-                categoryActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            JSONObject json = new JSONObject(myResponse);
-                            List<Category> categories = getCategoriesFromJson(json.getJSONObject("data"));
-                            callback.onCategoriesDownloaded(categories);
-                        } catch (JSONException e) {
-                            Toast.makeText(categoryActivity, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+            public void onSuccess(JSONArray jsonArray) {
+
+            }
+
+            @Override
+            public void onFailure(String request) {
+               // Toast.makeText(categoryActivity, request, Toast.LENGTH_SHORT).show();
+              //  callback.onFailure(request);
             }
         });
+//        OkHttpClient client = BaseApi.getClient();
+//        Request request = createRequestFroDownloadCategories();
+//
+//        client.newCall(request).enqueue(new okhttp3.Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                call.cancel();
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                final String myResponse = response.body().string();
+//                categoryActivity.runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        try {
+//                            JSONObject json = new JSONObject(myResponse);
+//                            List<Category> categories = getCategoriesFromJson(json.getJSONObject("data"));
+//                            callback.onCategoriesDownloaded(categories);
+//                        } catch (JSONException e) {
+//                            Toast.makeText(categoryActivity, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
+//            }
+//        });
     }
 
-    // TODO: 25.10.2018 для маппинга данных использовать библиотеку GSON или LoganSquare
     private List<Category> getCategoriesFromJson(JSONObject data) {
         List<Category> categories = new ArrayList<>();
         try {

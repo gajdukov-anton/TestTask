@@ -1,9 +1,11 @@
-package com.example.user.activity;
+package com.example.user.activity.AllGoods;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,32 +14,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.user.adapter.AllGoodsAdapter;
-import com.example.user.api.BaseApi;
+import com.example.user.activity.Good.GoodActivity;
 import com.example.user.api.ProductApi;
 import com.example.user.application.App;
 import com.example.user.model.Product;
 import com.example.user.onlineshop.R;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
-public class AllGoodsActivity extends AppCompatActivity {
+public class AllGoodsActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
     private List<Product> products;
     private RecyclerView recyclerView;
     private AllGoodsAdapter adapter;
-    private LinearLayoutManager llm;
+    private LinearLayoutManager linearLayoutManager;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private int categoryId;
 
 
@@ -48,13 +40,33 @@ public class AllGoodsActivity extends AppCompatActivity {
         Bundle arguments = getIntent().getExtras();
         setTitle(arguments.getString("title"));
         categoryId = arguments.getInt("categoryId");
+        swipeRefreshLayout = createSwipeRefreshLayout(R.id.allGoodsSwipeRefresh);
+        createBackButton();
 
-        try {
+        try { // Возможно вынести в отдельную функцию
             createRecyclerViewWithProducts(arguments.getInt("categoryId"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        createBackButton();
+    }
+
+    @Override
+    public void onRefresh() {
+        try {
+            createRecyclerViewWithProducts(categoryId);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private SwipeRefreshLayout createSwipeRefreshLayout(int id) {
+        SwipeRefreshLayout newSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(id);
+        newSwipeRefreshLayout.setOnRefreshListener(this);
+        newSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+        return newSwipeRefreshLayout;
     }
 
     private void createBackButton() {
@@ -75,22 +87,28 @@ public class AllGoodsActivity extends AppCompatActivity {
     }
 
     void createRecyclerViewWithProducts(int id) throws IOException {
-        ProductApi productApi = App.getProductApi();
-        ProductApi.Callback productApiListener = new ProductApi.Callback() {
-            @Override
-            public void onAllGoodsDownloaded(List<Product> products) {
-                createRecyclerView(products);
-            }
-
-            @Override
-            public void onGoodDownloaded(Product product) {
-
-            }
-        };
-        productApi.setCallback(productApiListener);
+        swipeRefreshLayout.setRefreshing(true);
         if (isOnline()) {
-            productApi.downloadProductList(this, categoryId);
+            App.getInstance().getProductApi().downloadProductList(this, categoryId, new ProductApi.Callback() {
+                @Override
+                public void onAllGoodsDownloaded(List<Product> products) {
+                    createRecyclerView(products);
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+
+                @Override
+                public void onGoodDownloaded(Product product) {
+
+                }
+
+                @Override
+                public  void onFailure(String request) {
+                    swipeRefreshLayout.setRefreshing(false);
+                    Toast.makeText(AllGoodsActivity.this, request, Toast.LENGTH_LONG).show();
+                }
+            });
         } else {
+            swipeRefreshLayout.setRefreshing(false);
             Toast.makeText(this, "Отсутствует подключение к интеренету", Toast.LENGTH_LONG).show();
         }
     }
@@ -106,8 +124,8 @@ public class AllGoodsActivity extends AppCompatActivity {
             }
         };
         adapter.setCallback(adapterListener);
-        llm = new LinearLayoutManager(AllGoodsActivity.this);
-        recyclerView.setLayoutManager(llm);
+        linearLayoutManager = new LinearLayoutManager(AllGoodsActivity.this);
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
     }
 

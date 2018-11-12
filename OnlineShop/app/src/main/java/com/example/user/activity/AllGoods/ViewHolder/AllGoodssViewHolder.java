@@ -1,4 +1,4 @@
-package com.example.user.holder;
+package com.example.user.activity.AllGoods.ViewHolder;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;

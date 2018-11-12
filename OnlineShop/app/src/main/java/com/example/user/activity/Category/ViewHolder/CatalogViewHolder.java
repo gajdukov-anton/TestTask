@@ -1,4 +1,4 @@
-package com.example.user.holder;
+package com.example.user.activity.Category.ViewHolder;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;

@@ -1,9 +1,10 @@
 
-package com.example.user.activity;
+package com.example.user.activity.Good;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,10 +26,11 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class GoodActivity extends AppCompatActivity {
+public class GoodActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private int productId;
     private Product product;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +39,24 @@ public class GoodActivity extends AppCompatActivity {
         Bundle arguments = getIntent().getExtras();
         setTitle(arguments.getString("title"));
         productId = arguments.getInt("productId");
+        swipeRefreshLayout = createSwipeRefreshLayout(R.id.goodSwipeRefresh);
         createBackButton();
         createProductView();
+    }
+
+    @Override
+    public void onRefresh() {
+        createProductView();
+    }
+
+    private SwipeRefreshLayout createSwipeRefreshLayout(int id) {
+        SwipeRefreshLayout newSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(id);
+        newSwipeRefreshLayout.setOnRefreshListener(this);
+        newSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+        return newSwipeRefreshLayout;
     }
 
     private void createBackButton() {
@@ -59,22 +77,29 @@ public class GoodActivity extends AppCompatActivity {
     }
 
     private void createProductView() {
-        ProductApi productApi = App.getProductApi();
-        ProductApi.Callback productApiListener = new ProductApi.Callback() {
-            @Override
-            public void onAllGoodsDownloaded(List<Product> products) {
-            }
-
-            @Override
-            public void onGoodDownloaded(Product product) {
-                createProductView(product);
-            }
-        };
-        productApi.setCallback(productApiListener);
+        swipeRefreshLayout.setRefreshing(true);
         if (isOnline()) {
-            productApi.downloadProduct(this, productId);
+            App.getInstance().getProductApi().downloadProduct(this, productId, new ProductApi.Callback() {
+                @Override
+                public void onAllGoodsDownloaded(List<Product> products) {
+                }
+
+                @Override
+                public void onGoodDownloaded(Product product) {
+                    createProductView(product);
+                    swipeRefreshLayout.setRefreshing(false);
+
+                }
+
+                @Override
+                public void onFailure(String request) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            });
         } else {
             Toast.makeText(this, "Отсутствует подключение к интеренету", Toast.LENGTH_LONG).show();
+            swipeRefreshLayout.setRefreshing(false);
+
         }
     }
 

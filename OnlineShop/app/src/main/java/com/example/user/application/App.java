@@ -5,18 +5,34 @@ import com.example.user.api.CategoryApi;
 import com.example.user.api.ProductApi;
 
 public class App {
-    private static CategoryApi categoryApi;
-    private static BaseApi baseApi;
 
-    public static BaseApi getBaseApi() {
-        return BaseApi.getInstance();
+    private static App instance;
+    private  CategoryApi categoryApi;
+    private ProductApi productApi;
+    private  BaseApi baseApi;
+
+    private App() {
+        categoryApi = new CategoryApi();
+        productApi = new ProductApi();
+
     }
 
-    public static CategoryApi getCategoryApi() {
-        return CategoryApi.getInstance();
+    public static App getInstance() {
+        if (instance == null) {
+            instance = new App();
+        }
+        return instance;
     }
 
-    public static ProductApi getProductApi() {
-        return ProductApi.getInstance();
+    public  BaseApi getBaseApi() {
+        return baseApi;
+    }
+
+    public CategoryApi getCategoryApi() {
+        return categoryApi;
+    }
+
+    public ProductApi getProductApi() {
+        return productApi;
     }
 }

@@ -1,107 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/goodSwipeRefresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.user.activity.GoodActivity">
+    android:layout_height="match_parent">
 
-    <ScrollView
-        android:id="@+id/scrollViewGood"
+    <android.support.constraint.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent">
+        tools:context="com.example.user.activity.Good.GoodActivity">
 
-        <android.support.constraint.ConstraintLayout
+        <ScrollView
+            android:id="@+id/scrollViewGood"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/imageGood"
-                android:layout_width="330dp"
-                android:layout_height="280dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="24dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/titleGood"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textAlignment="center"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/imageGood" />
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <android.support.constraint.ConstraintLayout
-                android:id="@+id/buyViewGood"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
-                android:layout_marginTop="10dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/titleGood">
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/imageGood"
+                    android:layout_width="330dp"
+                    android:layout_height="280dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/titleGood"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textAlignment="center"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/imageGood" />
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/buyViewGood"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/colorPrimary"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/titleGood">
 
                     <TextView
                         android:id="@+id/priceGood"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:textSize="18sp"
                         android:textColor="@color/white"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/buy"
+                        android:layout_marginBottom="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:textSize="18sp"
-                        android:textColor="@color/white"
                         android:onClick="buyGood"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        android:text="@string/buy"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        />
-            </android.support.constraint.ConstraintLayout>
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
 
 
-            <RatingBar
-                android:id="@+id/ratingGood"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"
-                android:isIndicator="true"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/buyViewGood"
-                tools:layout_editor_absoluteX="322dp"
-                style="?android:attr/ratingBarStyleSmall"
-                 />
+                <RatingBar
+                    android:id="@+id/ratingGood"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:isIndicator="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/buyViewGood"
+                    tools:layout_editor_absoluteX="322dp" />
 
 
-            <TextView
-                android:id="@+id/descriptionGood"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:textAlignment="textStart"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ratingGood" />
+                <TextView
+                    android:id="@+id/descriptionGood"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:textAlignment="textStart"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ratingGood" />
 
-            <!--<Button-->
+                <!--<Button-->
                 <!--android:id="@+id/buyBottomGood"-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="wrap_content"-->
@@ -111,8 +113,10 @@
                 <!--app:layout_constraintBottom_toBottomOf="parent"-->
                 <!--app:layout_constraintStart_toStartOf="parent"-->
                 <!--app:layout_constraintTop_toBottomOf="@+id/descriptionGood" />-->
-        </android.support.constraint.ConstraintLayout>
-    </ScrollView>
+            </android.support.constraint.ConstraintLayout>
+        </ScrollView>
 
 
-</android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>
