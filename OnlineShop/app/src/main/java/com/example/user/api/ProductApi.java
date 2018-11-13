@@ -33,77 +33,35 @@ public class ProductApi extends BaseApi {
 
     public interface Callback {
         void onAllGoodsDownloaded(List<Product> products);
+
         void onFailure(String request);
+
         void onGoodDownloaded(Product product);
     }
 
-    private Request createRequestForDownloadProducts(int categoryId) {
-        return new Request.Builder()
-                .url(baseUrl + productsApi + productsParamCategoryId + String.valueOf(categoryId) + "&" + appKey)
-                .build();
-    }
-
-    public Request createRequestForDownloadProduct(int productId) {
-        return new Request.Builder()
-                .url(baseUrl + productApi + productParamProductId + String.valueOf(productId) + "&" + appKey)
-                .build();
-    }
-
     public void downloadProductList(final AllGoodsActivity allGoodsActivity, int categoryId, final Callback callback) {
-//        OkHttpClient client = BaseApi.getClient();
-//        Request request = createRequestForDownloadProducts(categoryId);
-//
-//
-//        /*JsonArray data*/
-//        client.newCall(request).enqueue(new okhttp3.Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                call.cancel();
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                final String myResponse = response.body().string();
-//                allGoodsActivity.runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        try {
-//                            JSONObject json = new JSONObject(myResponse);
-//                            List<Product> products = getProductsFromJson(json);
-//                            callback.onAllGoodsDownloaded(products);
-//                        } catch (JSONException e) {
-//                            Toast.makeText(allGoodsActivity, e.getMessage(), Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
-//            }
-//        });
-        sendRequest(createRequestForDownloadProducts(categoryId), allGoodsActivity, new Listener() {
+        sendRequest(baseUrl + productsApi + productsParamCategoryId + String.valueOf(categoryId) + "&" + appKey, allGoodsActivity, new Listener() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
-
             }
 
             @Override
             public void onSuccess(JSONArray jsonArray) {
                 List<Product> products = getProductsFromJson(jsonArray);
-
                 callback.onAllGoodsDownloaded(products);
             }
 
             @Override
             public void onFailure(String request) {
-               // Toast.makeText(allGoodsActivity, request, Toast.LENGTH_SHORT).show();
                 callback.onFailure(request);
             }
         });
     }
 
-    private List<Product> getProductsFromJson(JSONArray data) {
+    private List<Product> getProductsFromJson(JSONArray jsonArray) {
         List<Product> products = new ArrayList<>();
         try {
             Gson gson = new Gson();
-            JSONArray jsonArray = data; //data.getJSONArray("data");
             if (jsonArray != null) {
                 int len = jsonArray.length();
                 for (int i = 0; i < len; i++) {
@@ -119,33 +77,7 @@ public class ProductApi extends BaseApi {
     }
 
     public void downloadProduct(final GoodActivity goodActivity, int productId, final Callback callback) {
-//        OkHttpClient client = BaseApi.getClient();
-//        Request request = createRequestForDownloadProduct(productId);
-//
-//        client.newCall(request).enqueue(new okhttp3.Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                call.cancel();
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                final String myResponse = response.body().string();
-//                goodActivity.runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        try {
-//                            JSONObject json = new JSONObject(myResponse);
-//                            Product product = getProductFromJson(json.getJSONObject("data"));
-//                            callback.onGoodDownloaded(product);
-//                        } catch (JSONException e) {
-//                            Toast.makeText(goodActivity, e.getMessage(), Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
-//            }
-//        });
-        sendRequest(createRequestForDownloadProduct(productId), goodActivity, new Listener() {
+        sendRequest(baseUrl + productApi + productParamProductId + String.valueOf(productId) + "&" + appKey, goodActivity, new Listener() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 Product product = getProductFromJson(jsonObject);
@@ -159,7 +91,7 @@ public class ProductApi extends BaseApi {
 
             @Override
             public void onFailure(String request) {
-                Toast.makeText(goodActivity, request, Toast.LENGTH_SHORT).show();
+                callback.onFailure(request);
             }
         });
     }

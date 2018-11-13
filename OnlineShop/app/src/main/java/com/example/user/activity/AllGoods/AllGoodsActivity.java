@@ -42,21 +42,12 @@ public class AllGoodsActivity extends AppCompatActivity implements SwipeRefreshL
         categoryId = arguments.getInt("categoryId");
         swipeRefreshLayout = createSwipeRefreshLayout(R.id.allGoodsSwipeRefresh);
         createBackButton();
-
-        try { // Возможно вынести в отдельную функцию
-            createRecyclerViewWithProducts(arguments.getInt("categoryId"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        createRecyclerViewWithProducts(arguments.getInt("categoryId"));
     }
 
     @Override
     public void onRefresh() {
-        try {
-            createRecyclerViewWithProducts(categoryId);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        createRecyclerViewWithProducts(categoryId);
     }
 
     private SwipeRefreshLayout createSwipeRefreshLayout(int id) {
@@ -86,7 +77,7 @@ public class AllGoodsActivity extends AppCompatActivity implements SwipeRefreshL
         }
     }
 
-    void createRecyclerViewWithProducts(int id) throws IOException {
+    void createRecyclerViewWithProducts(int id)  {
         swipeRefreshLayout.setRefreshing(true);
         if (isOnline()) {
             App.getInstance().getProductApi().downloadProductList(this, categoryId, new ProductApi.Callback() {

@@ -27,14 +27,6 @@ public class BaseApi {
     protected String baseUrl = "http://onlinestore.whitetigersoft.ru/api";
     private static OkHttpClient client;
 
-    public static OkHttpClient getClient() {
-        if (client != null) {
-            return client;
-        } else {
-            client = new OkHttpClient();
-            return client;
-        }
-    }
 
     protected interface Listener {
         void onSuccess(JSONObject jsonObject);
@@ -47,8 +39,9 @@ public class BaseApi {
 
     // TODO: 07.11.2018 add sendRequestMethod
 
-    protected void sendRequest(Request request, final AppCompatActivity appCompatActivity, final Listener listener/*requestType, url, liastParams, Listener*/) {
-        OkHttpClient client = BaseApi.getClient();
+    protected void sendRequest(String url, final AppCompatActivity appCompatActivity, final Listener listener) {
+        OkHttpClient client = new OkHttpClient();
+        Request request = createRequest(url);
         client.newCall(request).enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -80,6 +73,12 @@ public class BaseApi {
                 });
             }
         });
+    }
+
+    private Request createRequest(String url) {
+        return new Request.Builder()
+                .url(url)
+                .build();
     }
 
     /**
